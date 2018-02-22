@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Load D3 from site -->
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  </head>
+  <body>
+  <div id="app"></div>
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+      .axis path,
+        .axis line {
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+
+        .axis text { display: none; }
+        text {
+            font-family: Helvetica, sans-serif;
+            font-size: 10px;
+        }
+    </style>
+    <!-- End CSS (Styling) -->
+
+  
+  <!-- Begin D3 Javascript -->
+  <script type="text/javascript">
+  
+            // ===== Start Scatterplot =====
+            // Setup settings for graphic
+            var canvas_width = 1200;
+            var canvas_height = 1000;
+            var padding = 50;  // Padding around canvas, i.e. replaces the 0 of scale
+
+            // Create SVG element
+            var svg = d3.select("#app")  // This is where we put our vis
+                .append("svg")
+                .attr("width", canvas_width)
+                .attr("height", canvas_height)
+
+            // scatterplot data is an array of arrays
+            var data_scatter = [
+ {
+   "label": "3D Printing",
+   "hype": 2.142857143,
+   "current": 1.714285714,
+   "potential": 2.714285714
+ },
+ {
+   "label": "APIs",
+   "hype": 2.378571429,
+   "current": 2.857142857,
+   "potential": 3.714285714
+ },
+ {
+   "label": "Artificial Intelligence/Machine learning",
+   "hype": 3.714285714,
+   "current": 1.428571429,
+   "potential": 3
+ },
+ {
+   "label": "Big Data",
+   "hype": 4,
+   "current": 1.714285714,
+   "potential": 3
+ },
+ {
+   "label": "Biometrics/Biotech",
+   "hype": 2.571428571,
+   "current": 2.142857143,
+   "potential": 3.285714286
+ },
+ {
+   "label": "Blockchain",
+   "hype": 4,
+   "current": 1.285714286,
+   "potential": 2.714285714
+ },
+ {
+   "label": "Chat bots",
+   "hype": 3.142857143,
+   "current": 1.428571429,
+   "potential": 2.428571429
+ },
+ {
+   "label": "Cloud computing / cloud based services",
+   "hype": 2.428571429,
+   "current": 3,
+   "potential": 3.571428571
+ },
+ {
+   "label": "Cryptocurrency",
+   "hype": 3,
+   "current": 1.333333333,
+   "potential": 2
+ },
+ {
+   "label": "Dashboards (PowerBI, Tableau, Javascript)",
+   "hype": 4,
+   "current": 3,
+   "potential": 3.285714286
+ },
+ {
+   "label": "Drones",
+   "hype": 3.857142857,
+   "current": 1.714285714,
+   "potential": 3.5
+ },
+ {
+   "label": "Healthcare Information Systems (HIS)",
+   "hype": 2.30,
+   "current": 2.666666667,
+   "potential": 3.85
+ },
+ {
+   "label": "Humanitarian Data Exchange (HDX)",
+   "hype": 3.205714286,
+   "current": 2.571428571,
+   "potential": 4
+ },
+ {
+   "label": "Humanitarian ID",
+   "hype": 2,
+   "current": 2.142857143,
+   "potential": 3.714285714
+ },
+ {
+   "label": "Humanitarian Exchange Language (HXL)",
+   "hype": 2.714285714,
+   "current": 1.857142857,
+   "potential": 4
+ },
+ {
+   "label": "International Aid Transparency Initiative (IATI)",
+   "hype": 2.142857143,
+   "current": 2.428571429,
+   "potential": 3.571428571
+ },
+ {
+   "label": "Linked Open Data/RDF",
+   "hype": 1.857142857,
+   "current": 1.571428571,
+   "potential": 3.285714286
+ },
+ {
+   "label": "Messaging Apps (two-way messaging with beneficiaries)",
+   "hype": 2.5,
+   "current": 2,
+   "potential": 3.35
+ },
+ {
+   "label": "Mobile carrier data",
+   "hype": 3,
+   "current": 1.857142857,
+   "potential": 2.857142857
+ },
+ {
+   "label": "Mobile Data Collection",
+   "hype": 3.285714286,
+   "current": 3,
+   "potential": 3.857142857
+ },
+ {
+   "label": "Mobile money",
+   "hype": 3,
+   "current": 2.714285714,
+   "potential": 4
+ },
+ {
+   "label": "OpenStreetMap",
+   "hype": 2.857142857,
+   "current": 3,
+   "potential": 3.857142857
+ },
+ {
+   "label": "Rumor/Sentiment Analysis",
+   "hype": 2.666666667,
+   "current": 1.833333333,
+   "potential": 2.333333333
+ },
+ {
+   "label": "SMS data collection",
+   "hype": 2.5,
+   "current": 2.5,
+   "potential": 3
+ },
+ {
+   "label": "Solar Power",
+   "hype": 2.333333333,
+   "current": 2.166666667,
+   "potential": 3.666666667
+ },
+ {
+   "label": "Virtual and Augmented Reality",
+   "hype": 3.285714286,
+   "current": 1.142857143,
+   "potential": 2.142857143
+ },
+ {
+   "label": "Voice assistance (e.g. Alexa, Google Home)",
+   "hype": 2.857142857,
+   "current": 1.142857143,
+   "potential": 2.285714286
+ }
+];  // Can add additional values and will scale
+
+data_scatter.sort(function(a,b){
+  return (b.potential-b.current) - (a.potential-a.current)
+});
+
+var colors = ['#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#0868ac','#084081'];
+
+            // Define Scales - scales map an input domain with an output range
+            var xScale = d3.scale.linear()
+                .domain([1,4.5])
+                .range([padding+275, canvas_width - padding]);
+
+            svg.selectAll("rect")
+                .data(data_scatter)
+                .enter()
+                .append("rect")
+                .attr("x", function(d) {
+                    return 0;  // Returns scaled circle x
+                })
+                .attr("y", function(d,i) {
+                    return i*30+45;  // Returns scaled circle y
+                })
+                .attr("width", function(d) {
+                    return canvas_width;  // Returns scaled circle x
+                })
+                .attr("height", function(d,i) {
+                    return 30;  // Returns scaled circle y
+                })
+                .attr("fill",function(d,i){
+                  if(i%2 ==0){
+                    return "#ffffff"
+                  } else {
+                    return "#eeeeee"
+                  }
+                });                
+
+            svg.selectAll("line")
+                .data(data_scatter)
+                .enter()
+                .append("line")
+                .attr("x1", function(d) {
+                    return xScale(d.current);  // Returns scaled circle x
+                })
+                .attr("y1", function(d,i) {
+                    return i*30+60;  // Returns scaled circle y
+                })
+                .attr("x2", function(d) {
+                    return xScale(d.potential);  // Returns scaled circle x
+                })
+                .attr("y2", function(d,i) {
+                    return i*30+60;  // Returns scaled circle y
+                })
+                .attr("stroke","#666")
+                .attr("stroke-width",2);
+
+            // Add circles from data
+            svg.selectAll("circlepotential")
+                .data(data_scatter)
+                .enter()
+                .append("circle")
+                .attr("r", function(d){return 4})  // Radius
+                .attr("cx", function(d) {
+                    return xScale(d.potential);  // Returns scaled circle x
+                })
+                .attr("cy", function(d,i) {
+                    return i*30+60;  // Returns scaled circle y
+                })
+                .attr("fill",function(d){
+                    return colors[5]
+                });
+
+            svg.selectAll("circlecurrent")
+                .data(data_scatter)
+                .enter()
+                .append("circle")
+                .attr("r", function(d){return 4})  // Radius
+                .attr("cx", function(d) {
+                    return xScale(d.current);  // Returns scaled circle x
+                })
+                .attr("cy", function(d,i) {
+                    return i*30+60;  // Returns scaled circle y
+                })
+                .attr("fill",function(d){
+                    return "#4CAF50"
+                });               
+
+ 
+
+            // Add Text labels
+            svg.selectAll("text")
+                .data(data_scatter)
+                .enter()
+                .append("text")
+                .text(function(d) {
+                    return d.label;
+                })
+                .attr("x", function(d) {
+                    return 50;  // Returns scaled location of x
+                })
+                .attr("y", function(d,i) {
+                    return i*30+60;  // Returns scaled circle y
+                })
+                .attr("dy","0.35em")
+                .attr("font_family", "sans-serif")  // Font type
+                .style("font-size", 12)  // Font size
+                .attr("fill", "black");   // Font color
+
+            // Define X axis and attach to graph
+            var xAxis = d3.svg.axis()  // Create an x axis
+                .scale(xScale)      // Scale x axis
+                .orient("top")  // Put text on bottom of axis line
+                .ticks(10);  // Set rough # of ticks (optional)
+
+            svg.append("g")     // Append a group element (itself invisible, but helps 'group' elements)
+                .attr("class", "axis")  // Assign the 'axis' CSS
+                .attr("transform", "translate(0," + 40 + ")")  // Place axis at bottom
+                .call(xAxis);  // Call function to create axis*/
+
+            svg.append("text")
+                .text(function(d) {
+                    return "Growth Potential for Impact";
+                })
+                .attr("x", function(d) {
+                    return -520;  // Returns scaled location of x
+                })
+                .attr("y", function(d,i) {
+                    return 20;  // Returns scaled circle y
+                })
+                .attr("dy","0.35em")
+                .attr("font_family", "sans-serif")  // Font type
+                .style("font-size", 18)  // Font size
+                .attr("fill", "black")
+                .attr("transform", function(d) {
+                return "rotate(-90)" 
+                });   // Font color
+                               
+            svg.append("text")
+                .text(function(d) {
+                    return "High";
+                })
+                .attr("x", function(d) {
+                    return -120;  // Returns scaled location of x
+                })
+                .attr("y", function(d,i) {
+                    return 20;  // Returns scaled circle y
+                })
+                .attr("dy","0.35em")
+                .attr("font_family", "sans-serif")  // Font type
+                .style("font-size", 18)  // Font size
+                .attr("fill", "black")
+                .attr("transform", function(d) {
+                return "rotate(-90)" 
+                });   // Font color
+
+            svg.append("text")
+                .text(function(d) {
+                    return "Low";
+                })
+                .attr("x", function(d) {
+                    return -820;  // Returns scaled location of x
+                })
+                .attr("y", function(d,i) {
+                    return 20;  // Returns scaled circle y
+                })
+                .attr("dy","0.35em")
+                .attr("font_family", "sans-serif")  // Font type
+                .style("font-size", 18)  // Font size
+                .attr("fill", "black")
+                .attr("transform", function(d) {
+                return "rotate(-90)" 
+                });
+
+            svg.append("rect")
+                .attr("x", function(d) {
+                    return 1020;  // Returns scaled circle x
+                })
+                .attr("y", function(d,i) {
+                    return 90;  // Returns scaled circle y
+                })
+                .attr("width", function(d) {
+                    return 150;  // Returns scaled circle x
+                })
+                .attr("height", function(d,i) {
+                    return 50;  // Returns scaled circle y
+                })
+                .attr("fill","#ffffff");      
+            
+            svg.append("circle")
+                .attr("r", function(d){return 4})  // Radius
+                .attr("cx", function(d) {
+                    return 1040;  // Returns scaled circle x
+                })
+                .attr("cy", function(d,i) {
+                    return 104;  // Returns scaled circle y
+                })
+                .attr("fill",function(d){
+                    return "#4CAF50"
+                });
+
+            svg.append("circle")
+                .attr("r", function(d){return 4})  // Radius
+                .attr("cx", function(d) {
+                    return 1040;  // Returns scaled circle x
+                })
+                .attr("cy", function(d,i) {
+                    return 124;  // Returns scaled circle y
+                })
+                .attr("fill",function(d){
+                    return colors[5]
+                });
+
+            svg.append("text")
+                .text(function(d) {
+                    return "Current Impact";
+                })
+                .attr("x", function(d) {
+                    return 1050;  // Returns scaled location of x
+                })
+                .attr("y", function(d,i) {
+                    return 104;  // Returns scaled circle y
+                })
+                .attr("dy","0.35em")
+                .attr("font_family", "sans-serif")  // Font type
+                .style("font-size", 12)  // Font size
+                .attr("fill", "black");                     
+
+            svg.append("text")
+                .text(function(d) {
+                    return "Potential Impact";
+                })
+                .attr("x", function(d) {
+                    return 1050;  // Returns scaled location of x
+                })
+                .attr("y", function(d,i) {
+                    return 124;  // Returns scaled circle y
+                })
+                .attr("dy","0.35em")
+                .attr("font_family", "sans-serif")  // Font type
+                .style("font-size", 12)  // Font size
+                .attr("fill", "black"); 
+
+            svg.append("text")
+                .text(function(d) {
+                    return "Impact";
+                })
+                .attr("x", function(d) {
+                    return 650;  // Returns scaled location of x
+                })
+                .attr("y", function(d,i) {
+                    return 10;  // Returns scaled circle y
+                })
+                .attr("dy","0.35em")
+                .attr("font_family", "sans-serif")  // Font type
+                .style("font-size", 18)  // Font size
+                .attr("fill", "black");                 
+
+  </script>
+  </body>
+</html>
