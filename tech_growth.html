@@ -460,6 +460,36 @@ var colors = ['#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#0868ac','#084081'];
                 .style("font-size", 18)  // Font size
                 .attr("fill", "black");                 
 
+            svg.append("text")
+                .text(function(d) {
+                    return "Low";
+                })
+                .attr("x", function(d) {
+                    return 300;  // Returns scaled location of x
+                })
+                .attr("y", function(d,i) {
+                    return 10;  // Returns scaled circle y
+                })
+                .attr("dy","0.35em")
+                .attr("font_family", "sans-serif")  // Font type
+                .style("font-size", 18)  // Font size
+                .attr("fill", "black");  
+
+            svg.append("text")
+                .text(function(d) {
+                    return "High";
+                })
+                .attr("x", function(d) {
+                    return 1130;  // Returns scaled location of x
+                })
+                .attr("y", function(d,i) {
+                    return 10;  // Returns scaled circle y
+                })
+                .attr("dy","0.35em")
+                .attr("font_family", "sans-serif")  // Font type
+                .style("font-size", 18)  // Font size
+                .attr("fill", "black");  
+
   </script>
   </body>
 </html>
