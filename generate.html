@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Random Centred Design</title>
+    <!-- Load D3 from site -->
+    <script
+  src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+  integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+  crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style type="text/css">
+      .btn-primary {
+        font-size:48px;
+        margin-top:30px;
+      }
+
+      p {
+        font-size:18px;
+      }
+
+      #idea {
+        font-size:80px;
+      }
+
+      .item1 {
+        color:#B71C1C;
+      }
+
+      .item2 {
+        color:#1A237E;
+      }
+
+      #idea {
+        min-height:350px;
+      }
+    </style>
+  </head>
+  <body>
+  <div id="app" class="container">
+    <div class="row">
+      <div class = "col-md-12">
+        <h1>Random Centred design</h1>
+        <p>Need help coming up with the latest tech that will revolutionise the humanitarian sector?</p>
+        <p>Then use our random centred design tool. Click below for the next big idea.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class = "col-md-12">
+        <button id="ideate" class="btn btn-primary btn-lg">Ideate</button>
+      </div>    
+    </div>    
+    <div class="row">
+      <div class = "col-md-12">
+        <p id = "idea" ></p>
+      </div>      
+    </div>
+    <div class="row">
+      <div class = "col-md-12">
+        <p id="credits">Keywords drawn from Humanitarian Tech Hype 2018 article. Idea inspired by David Megginson's <a href="https://twitter.com/david_megginson/status/964519976685092865">tweet</a>. Created by <a href="https://twitter.com/Simon_B_Johnson">@simon_b_johnson</a></p>
+      </div>      
+    </div>
+  </div>
+  <script type="text/javascript">
+    $('#ideate').on('click',function(){newIdea()});
+
+    var item1 = ["distributed","blockchain","big data","transparent","open source","open data","biometric","real time evaluated","agile","adaptive","mixed methods","open","resilient","forecast based","networked","crowdsourced","solar powered","traceable","bottom - up"];
+
+    var item2 = ["3d printer","chatbot","cryptocurrency","artifical intelligence","voice assistant","linked", "mobile money","augmented reality","virtual reality","digital identity","two way messaging app","social network","mobile carrier data","business intelligence"];
+
+    var item3 = ["cash distribution","rumour analysis","direct giving","data literacy","humanitarian Data Standards","responsible data","digital volunteering","communities of practice","info as a service","just in time logistics","infomation management","evidence based decision making","real time evalution","mobile data collection"];
+
+    function newIdea(){
+      var r1a = Math.floor(Math.random() * item1.length);
+      var r1b = Math.floor(Math.random() * item1.length);
+      var r2 = Math.floor(Math.random() * item2.length);
+      var r3 = Math.floor(Math.random() * item3.length);
+
+      var word1a = item1[r1a];
+      var word1b = item1[r1b];
+      var word2 = item2[r2];
+      var word3 = item3[r3];
+
+      var idea = [];
+      if(isVowel(word1a[0])){
+        idea.push('An')
+      } else {
+        idea.push('A')
+      }
+      idea = idea.concat(['<span class="item1">'+word1a+'</span>','<span class="item2">'+word2+'</span>','for','<span class="item1">'+word1b+'</span>','<span class="item2">'+word3+'</span>']);
+
+      updateIdea(idea);
+    }
+
+    function updateIdea(idea){
+      $('#idea').html("");
+      addPart(idea);
+    }
+
+    function addPart(list){
+
+      if(list.length>0){
+        $('#idea').append(list[0]+' ');
+        list.shift();
+        setTimeout(function(){addPart(list)},250);
+      }
+      
+    }
+
+    function isVowel(x) {
+
+      var result;
+
+      result = x == "A" || x == "E" || x == "I" || x == "O" || x == "U" || x == "a" || x == "e" || x == "i" || x == "o" || x == "u";
+      return result;
+    }        
+
+  </script>
+  </body>
+</html>
