@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Load D3 from site -->
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  </head>
+ 
+    <!-- CSS (Styling) -->
+    <style type="text/css">
+      .axis path,
+        .axis line {
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+
+        .axis text { display: none; }
+
+        text {
+            font-family: Helvetica, sans-serif;
+            font-size: 10px;
+        }
+    </style>
+    <!-- End CSS (Styling) -->
+  <body>
+    <div id="vis"></div>
+  
+  <!-- Begin D3 Javascript -->
+  <script type="text/javascript">
+  
+            // ===== Start Scatterplot =====
+            // Setup settings for graphic
+            var canvas_width = 1200;
+            var canvas_height = 600;
+            var padding = 50;  // Padding around canvas, i.e. replaces the 0 of scale
+
+            // Create SVG element
+            var svg = d3.select("#vis")  // This is where we put our vis
+                .append("svg")
+                .attr("width", canvas_width)
+                .attr("height", canvas_height)
+
+            // scatterplot data is an array of arrays
+            var data_scatter = [
+ {
+   "label": "3D Printing",
+   "hype": 3.48,
+   "current": 2,
+   "potential": 3.53
+ },
+ {
+   "label": "Artificial Intelligence/Machine learning",
+   "hype": 4.45,
+   "current": 2,
+   "potential": 4.42
+ },
+ {
+   "label": "Big Data",
+   "hype": 4.05,
+   "current": 2,
+   "potential": 3.68
+ },
+ {
+   "label": "Biometrics/Biotech",
+   "hype": 3.63,
+   "current": 2,
+   "potential": 3.08
+ },
+ {
+   "label": "Blockchain",
+   "hype": 4.78,
+   "current": 2,
+   "potential":1.82 
+ },
+ {
+   "label": "Chat bots",
+   "hype": 3.35,
+   "current": 2,
+   "potential": 3.21
+ },
+ {
+   "label": "Cloud computing / cloud based services",
+   "hype": 4.58,
+   "current": 2,
+   "potential": 4.52
+ },
+ {
+   "label": "Cryptocurrency",
+   "hype": 4.6,
+   "current": 2,
+   "potential": 1.98
+ },
+ {
+   "label": "Dashboards (PowerBI, Tableau, Javascript)",
+   "hype": 4.01,
+   "current": 2,
+   "potential": 4.03
+ },
+ {
+   "label": "Drones",
+   "hype": 3.78,
+   "current": 2,
+   "potential": 3.49
+ },
+ {
+   "label": "Humanitarian Data Exchange (HDX)",
+   "hype": 3.15,
+   "current": 2,
+   "potential": 4.3
+ },
+ {
+   "label": "Humanitarian ID",
+   "hype": 1.95,
+   "current": 2,
+   "potential": 3.82
+ },
+ {
+   "label": "Humanitarian Exchange Language (HXL)",
+   "hype": 2.38,
+   "current": 2,
+   "potential": 3.78
+ },
+ {
+   "label": "International Aid Transparency Initiative (IATI)",
+   "hype": 2.1,
+   "current": 2,
+   "potential": 3.41
+ },
+ {
+   "label": "Mobile carrier data",
+   "hype": 3.01,
+   "current": 2,
+   "potential": 3.58
+ },
+ {
+   "label": "Mobile Data Collection",
+   "hype": 3.31,
+   "current": 2,
+   "potential": 4.19
+ },
+ {
+   "label": "Mobile money",
+   "hype": 3.13,
+   "current": 2,
+   "potential": 3.6
+ },
+ {
+   "label": "OpenStreetMap",
+   "hype": 2.8,
+   "current": 2,
+   "potential": 4.6
+ },
+ {
+   "label": "Rumor/Sentiment Analysis",
+   "hype": 3.24,
+   "current": 2,
+   "potential": 3.15
+ },
+ {
+   "label": "Voice assistance (e.g. Alexa, Google Home)",
+   "hype": 3.3,
+   "current": 2,
+   "potential": 2.3
+ }
+];  // Can add additional values and will scale
+
+var colors = ['#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#0868ac','#084081'];
+
+    var colorMin = d3.min(data_scatter, function(d) {
+                    return d.potential-d.current;  // get the input domain as first column of array
+                    });
+
+    var colorMax = d3.max(data_scatter, function(d) {
+                    return d.potential-d.current;  // get the input domain as first column of array
+                    });
+
+            // Define Scales - scales map an input domain with an output range
+            var xScale = d3.scale.linear()
+                .domain([1,5])
+                .range([padding, canvas_width - padding * 2]);
+
+            var yScale = d3.scale.linear()
+                .domain([1, 5])
+                .range([canvas_height - padding, padding]);  // Make decimals round up nicely
+
+            svg
+                .append("rect")
+                .attr("x", xScale(1))
+                .attr("y", yScale(5))
+                .attr("width", xScale(5)-xScale(3))
+                .attr("height", yScale(3)-yScale(5))
+                .attr("opacity",0.2)
+                .attr("fill","#F44336");
+
+            svg
+                .append("rect")
+                .attr("x", xScale(1))
+                .attr("y", yScale(3))
+                .attr("width", xScale(5)-xScale(3))
+                .attr("height", yScale(3)-yScale(5))
+                .attr("opacity",0.2)
+                .attr("fill","#2196F3");
+
+            svg
+                .append("rect")
+                .attr("x", xScale(3))
+                .attr("y", yScale(5))
+                .attr("width", xScale(5)-xScale(3))
+                .attr("height", yScale(3)-yScale(5))
+                .attr("opacity",0.2)
+                .attr("fill","#4CAF50");                                                                                  
+            svg
+                .append("rect")
+                .attr("x", xScale(3))
+                .attr("y", yScale(3))
+                .attr("width", xScale(5)-xScale(3))
+                .attr("height", yScale(3)-yScale(5))
+                .attr("opacity",0.2)
+                .attr("fill","#FFEB3B");  
+
+
+
+            // Add circles from data
+            svg.selectAll("circle")
+                .data(data_scatter)
+                .enter()
+                .append("circle")
+                .attr("r", function(d){return 8})  // Radius
+                .attr("cx", function(d) {
+                    return xScale(d.potential);  // Returns scaled circle x
+                })
+                .attr("cy", function(d) {
+                    return yScale(d.hype);  // Returns scaled circle y
+                })
+                .attr("fill",function(d){
+                    //var value = Math.round(((d.potential-d.current)-colorMin)/(colorMax-colorMin)*5);
+                    return colors[5]
+                });
+
+            // Add Text labels
+            svg.selectAll("text")
+                .data(data_scatter)
+                .enter()
+                .append("text")
+                .text(function(d) {
+                    return d.label;
+                })
+                .attr("x", function(d) {
+                    return xScale(d.potential)+10;  // Returns scaled location of x
+                })
+                .attr("y", function(d) {
+                    return yScale(d.hype)+4;  // Returns scaled circle y
+                })
+                .attr("font_family", "sans-serif")  // Font type
+                .attr("font-size", "11px")  // Font size
+                .attr("fill", "black");   // Font color
+
+            // Define X axis and attach to graph
+            var xAxis = d3.svg.axis()  // Create an x axis
+                .scale(xScale)      // Scale x axis
+                .orient("bottom")  // Put text on bottom of axis line
+                .ticks(10);  // Set rough # of ticks (optional)
+
+            svg.append("g")     // Append a group element (itself invisible, but helps 'group' elements)
+                .attr("class", "axis")  // Assign the 'axis' CSS
+                .attr("transform", "translate(0," + (canvas_height - padding) + ")")  // Place axis at bottom
+                .call(xAxis);  // Call function to create axis
+
+            // Define Y axis and attach to graph
+            var yAxis = d3.svg.axis()  // Create a y axis
+                .scale(yScale)  // Scale y axis
+                .orient("left")
+                .ticks(5);  // Set rough # of ticks (optional)
+
+            svg.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(" + padding + ",0)")
+                .call(yAxis);
+
+            svg
+                .append("text")
+                .text('Potential Impact on the Sector')
+                .attr("x", 450)
+                .attr("y", 590)
+                .style("font-size", "18px")
+                .attr("fill", "black");     
+
+            svg
+                .append("text")
+                .text('Hype')
+                .attr("x", -330)
+                .attr("y", 20)
+                .style("font-size", "18px")
+                .attr("fill", "black")
+                .attr("transform", function(d) {
+                return "rotate(-90)" 
+                });
+
+            svg
+                .append("text")
+                .text('Low')
+                .attr("x", -410)
+                .attr("y", 430)
+                .style("font-size", "18px")  // Font size
+                .attr("fill", "black")
+                .attr("transform", function(d) {
+                return "rotate(-45)" 
+                });
+
+            svg
+                .append("text")
+                .text('High')
+                .attr("x", 1050)
+                .attr("y", 590)
+                .style("font-size", "18px")
+                .attr("fill", "black");     
+
+            svg
+                .append("text")
+                .text('High')
+                .attr("x", -100)
+                .attr("y", 20)
+                .style("font-size", "18px")
+                .attr("fill", "black")
+                .attr("transform", function(d) {
+                return "rotate(-90)" 
+                }); 
+
+            /*svg
+                .append("rect")
+                .attr("x", 930)
+                .attr("y", 10)
+                .attr("width", 200)
+                .attr("height", 120)
+                .attr("fill","white");                
+
+            svg.append("circle")
+              .attr("cx",950)
+              .attr("cy",50)
+              .attr("r",8)
+              .attr("fill",colors[5]);
+
+            svg.append("circle")
+              .attr("cx",950)
+              .attr("cy",80)
+              .attr("r",4)
+              .attr("fill",colors[5]);
+
+            svg.append("circle")
+              .attr("cx",950)
+              .attr("cy",110)
+              .attr("r",2)
+              .attr("fill",colors[5]);
+
+            svg
+                .append("text")
+                .text('Legend')
+                .attr("x", 940)
+                .attr("y", 20)
+                .style("font-size", "11px")
+                .attr("fill", "black");     
+
+            svg
+                .append("text")
+                .text('High growth needed to reach potential')
+                .attr("x", 965)
+                .attr("y", 53)
+                .style("font-size", "11px")
+                .attr("fill", "black");
+
+            svg
+                .append("text")
+                .text('Medium growth needed to reach potential')
+                .attr("x", 965)
+                .attr("y", 83)
+                .style("font-size", "11px")
+                .attr("fill", "black");                                                 
+
+            svg
+                .append("text")
+                .text('Low growth needed to reach potential')
+                .attr("x", 965)
+                .attr("y", 113)
+                .style("font-size", "11px")
+                .attr("fill", "black");*/
+
+            svg
+                .append("rect")
+                .attr("x", 60)
+                .attr("y", 60)
+                .attr("width", 74)
+                .attr("height", 22)
+                .attr("fill","white"); 
+
+            svg
+                .append("text")
+                .text('Overhyped')
+                .attr("x", 70)
+                .attr("y", 75)
+                .style("font-size", "11px")
+                .attr("fill", "black");
+
+            svg
+                .append("rect")
+                .attr("x", 60)
+                .attr("y", 515)
+                .attr("width", 76)
+                .attr("height", 22)
+                .attr("fill","white"); 
+
+            svg
+                .append("text")
+                .text('Low Impact')
+                .attr("x", 70)
+                .attr("y", 530)
+                .style("font-size", "11px")
+                .attr("fill", "black");
+
+            svg
+                .append("rect")
+                .attr("x", 830)
+                .attr("y", 60)
+                .attr("width", 94)
+                .attr("height", 22)
+                .attr("fill","white");
+
+            svg
+                .append("text")
+                .text('Deserved Hype')
+                .attr("x", 840)
+                .attr("y", 75)
+                .style("font-size", "11px")
+                .attr("fill", "black");                 
+
+            svg
+                .append("rect")
+                .attr("x", 990)
+                .attr("y", 515)
+                .attr("width", 94)
+                .attr("height", 22)
+                .attr("fill","white"); 
+
+            svg
+                .append("text")
+                .text('Unsung Heroes')
+                .attr("x", 1000)
+                .attr("y", 530)
+                .style("font-size", "11px")
+                .attr("fill", "black");                 
+
+  </script>
+  </body>
+</html>
